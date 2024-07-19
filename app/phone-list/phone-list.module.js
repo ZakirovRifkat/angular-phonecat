@@ -1,1 +1,1 @@
-const phoneListModule = angular.module("phoneList", []);
+const phoneListModule = angular.module("phoneList", ["core.phone"]);
