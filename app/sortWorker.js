@@ -10,12 +10,10 @@ onmessage = (e) => {
         case "-age":
             sortFunc = (a, b) => b.age - a.age;
             break;
-        default:
+        case "name":
             sortFunc = (a, b) => a.name.localeCompare(b.name);
             break;
     }
-    console.log(phoneData);
-    const sortedPhones = phoneData.sort(sortFunc);
 
-    postMessage(sortedPhones);
+    postMessage(phoneData.sort(sortFunc));
 };
