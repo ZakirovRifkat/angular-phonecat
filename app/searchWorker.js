@@ -7,5 +7,6 @@ onmessage = (e) => {
             ? phones.filter((item) => item.name.toLowerCase().includes(query))
             : phones;
 
+    console.log(filteredPhones);
     postMessage(filteredPhones);
 };

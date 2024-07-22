@@ -7,13 +7,16 @@
                 Search:
                 <input
                     ng-model="query"
-                    ng-change="handleSearch('searchWorker')"
+                    ng-change="handleWorker(query, phoneData, searchWorker)"
                 />
             </p>
 
             <p>
                 Sort by:
-                <select ng-model="orderProp" ng-change="handleSort()">
+                <select
+                    ng-model="orderProp"
+                    ng-change="handleWorker(orderProp, phoneData, sortWorker)"
+                >
                     <option value="name">Alphabetical</option>
                     <option value="age">Newest</option>
                     <option value="-age">Oldest</option>
@@ -22,6 +25,7 @@
         </div>
         <div class="col-md-10">
             <!--Body content-->
+            <div>{{phones.length}}</div>
             <ul class="phones">
                 <li ng-repeat="phone in phones" class="thumbnail">
                     <a href="#!/phones/{{phone.id}}" class="thumb">

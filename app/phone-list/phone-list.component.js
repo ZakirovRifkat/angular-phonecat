@@ -1,6 +1,3 @@
-const searchWorker = new Worker("searchWorker.js");
-const sortWorker = new Worker("sortWorker.js");
-
 phoneListModule.component("phoneList", {
     templateUrl: "phone-list/phone-list.template.html",
     controller: [
@@ -16,32 +13,23 @@ phoneListModule.component("phoneList", {
             $scope.phones = Phone.query();
             $scope.phoneData = $scope.phones;
 
-            $scope.handleSearch = () => {
+            $scope.searchWorker = new Worker("searchWorker.js");
+            $scope.sortWorker = new Worker("sortWorker.js");
+
+            $scope.searchWorker.onmessage = addData;
+            $scope.sortWorker.onmessage = addData;
+
+            $scope.handleWorker = (key, data, worker) => {
                 if (window.Worker) {
-                    searchWorker.postMessage([$scope.query, $scope.phoneData]);
+                    worker.postMessage([key, data]);
                 }
             };
 
-            $scope.handleSort = () => {
-                if (window.Worker) {
-                    sortWorker.postMessage([
-                        $scope.orderProp,
-                        $scope.phoneData,
-                    ]);
-                }
-            };
-
-            searchWorker.onmessage = (e) => {
+            function addData(e) {
                 $scope.$apply(() => {
                     $scope.phones = e.data;
                 });
-            };
-
-            sortWorker.onmessage = (e) => {
-                $scope.$apply(() => {
-                    $scope.phones = e.data;
-                });
-            };
+            }
         },
     ],
 });
