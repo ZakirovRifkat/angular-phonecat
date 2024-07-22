@@ -6,26 +6,24 @@
             <p>
                 Search:
                 <input
-                    ng-model="$ctrl.query"
-                    ng-change="$ctrl.handleSearch()"
+                    ng-model="query"
+                    ng-change="handleSearch('searchWorker')"
                 />
             </p>
 
             <p>
                 Sort by:
-                <select ng-model="$ctrl.orderProp">
+                <select ng-model="orderProp" ng-change="handleSort()">
                     <option value="name">Alphabetical</option>
                     <option value="age">Newest</option>
                     <option value="-age">Oldest</option>
                 </select>
             </p>
         </div>
-        <button ng-click="$ctrl.foo()">click</button>
         <div class="col-md-10">
             <!--Body content-->
-            <div>{{filteredPhones.length}}</div>
             <ul class="phones">
-                <li ng-repeat="phone in filteredPhones" class="thumbnail">
+                <li ng-repeat="phone in phones" class="thumbnail">
                     <a href="#!/phones/{{phone.id}}" class="thumb">
                         <img ng-src="{{phone.imageUrl}}" alt="{{phone.name}}" />
                     </a>

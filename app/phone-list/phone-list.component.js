@@ -1,3 +1,6 @@
+const searchWorker = new Worker("searchWorker.js");
+const sortWorker = new Worker("sortWorker.js");
+
 phoneListModule.component("phoneList", {
     templateUrl: "phone-list/phone-list.template.html",
     controller: [
@@ -5,48 +8,39 @@ phoneListModule.component("phoneList", {
         "$log",
         "$scope",
         "$timeout",
-        "$worker",
         "Phone",
-        function PhoneListController(
-            $http,
-            $log,
-            $scope,
-            $timeout,
-            $worker,
-            Phone
-        ) {
-            const self = this;
-            self.orderProp = "age";
-            self.phones = Phone.query();
-            $scope.filteredPhones = self.phones;
-            self.query = "";
+        function PhoneListController($http, $log, $scope, $timeout, Phone) {
+            $scope.orderProp = "age";
+            $scope.query = "";
 
-            self.foo = () => {
-                console.log("1231232131");
-                $timeout(() => {
-                    $scope.filteredPhones = $scope.filteredPhones.slice(0, 5);
-                    console.log("Done");
-                }, 2000);
-            };
+            $scope.phones = Phone.query();
+            $scope.phoneData = $scope.phones;
 
-            const myWorker = new $worker("worker.js", { type: "module" });
-            self.handleSearch = () => {
+            $scope.handleSearch = () => {
                 if (window.Worker) {
-                    myWorker.postMessage([self.query, self.phones]);
-                } else {
-                    const data =
-                        self.query !== ""
-                            ? self.phones.filter((item) =>
-                                  item.name.toLowerCase().includes(self.query)
-                              )
-                            : self.phones;
-                    self.filteredPhones = data;
-                    console.log(self.filteredPhones);
+                    searchWorker.postMessage([$scope.query, $scope.phoneData]);
                 }
             };
 
-            myWorker.onmessage = (e) => {
-                $log.info(e.data);
+            $scope.handleSort = () => {
+                if (window.Worker) {
+                    sortWorker.postMessage([
+                        $scope.orderProp,
+                        $scope.phoneData,
+                    ]);
+                }
+            };
+
+            searchWorker.onmessage = (e) => {
+                $scope.$apply(() => {
+                    $scope.phones = e.data;
+                });
+            };
+
+            sortWorker.onmessage = (e) => {
+                $scope.$apply(() => {
+                    $scope.phones = e.data;
+                });
             };
         },
     ],
