@@ -1,9 +1,6 @@
 onmessage = (e) => {
-    console.log("Data received");
     const query = e.data[0].trim();
     const phones = e.data[1];
-    
-    console.log(query);
 
     const filteredPhones =
         query !== ""
